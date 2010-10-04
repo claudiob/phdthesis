@@ -1,0 +1,425 @@
+%!TEX TS-program = xelatex
+%!TEX TS-options = -output-driver="xdvipdfmx -q -E"
+\documentclass[a4paper,11pt]{memoir}
+
+\usepackage[]{graphicx,amssymb,epsfig,amsmath,amsthm,url,multirow,colortbl,named,framed}
+
+\usepackage[backref=page,colorlinks=false,pdfauthor={Claudio Baccigalupo},pdfcreator={Claudio Baccigalupo},pdfkeywords={Case-Based Reasoning, user-adaptive systems, social choice, preference aggregation, group customisation, experience Web, playlists, co-occurrence analysis, user modelling, personalised radios, adaptive hypermedia, digital music services},pdfpagelayout=TwoColumnRight,bookmarks=true]{hyperref}
+\usepackage{memhfixc}
+
+\renewcommand*{\backref}[1]{} 
+\renewcommand*{\backrefalt}[4]{% 
+\ifcase #1 % 
+\relax % No citations 
+\or 
+[$\hookrightarrow$\,page #2]% 
+\else 
+[$\hookrightarrow$\,pages #2]% 
+\fi 
+} 
+
+\usepackage{fontspec}
+\setmainfont[Mapping=tex-text]{Minister Std Light}
+\setsansfont[Mapping=tex-text]{Helvetica} 
+\setmonofont[Mapping=tex-text]{Inconsolata}
+
+\hyphenpenalty=1200
+\tolerance=600
+\hyphenation{MyStrands}
+\hyphenation{pool-casting}
+\hyphenation{in-di-vi-dual}
+\hyphenation{de-li-ve-ring}
+\hyphenation{mo-del-ling}
+\hyphenation{pre-fe-ren-ces}
+\hyphenation{stra-te-gy}
+
+\theoremstyle{definition}
+\newtheorem{name}{Printed output}
+\newtheorem{goal}{Goal}
+\newtheorem{property}{Property}
+\newtheorem{example}{Example} % Check if it's better with a final [chapter]
+\providecommand{\abs}[1]{\lvert#1\rvert} 
+\providecommand{\norm}[1]{\lVert#1\rVert}
+\providecommand{\citet}[1]{\citeauthor{#1} \shortcite{#1}} 
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\med}{med}
+\def\lgem{\discretionary{l-}{l}{\hbox{l$\cdot$l}}} 
+\newcommand{\songquote}[2]{\begin{flushright}\setromanfont{Minister Std Light}\small\emph{#1} \\\vspace*{5pt} #2 \end{flushright}}
+\newcommand{\songquotewhite}[2]{\begin{flushright}\setromanfont{Minister Std Light}\small\emph{} \\\vspace*{5pt}  \end{flushright}}
+ 
+
+%%% FRAMED BOX %%%
+\newenvironment{exm}{%
+  \def\FrameCommand{\fboxsep=\FrameSep \fboxrule=\FrameRule} % \vrule width 1pt \hspace{10pt}}%
+  \MakeFramed {\setlength{\hsize}{\textwidth-5\FrameSep-5\FrameRule} \FrameRestore}}%
+{\endMakeFramed}
+ 
+%%% CHAPTER %%%
+\makeatletter
+\def\thickhrulefill{\leavevmode \leaders \hrule \hfill \kern \z@}
+\renewcommand{\@makechapterhead}[1]{\cleardoublepage\thispagestyle{empty}\vspace*{1\p@}%
+  {\parindent \z@ \hyphenpenalty=10000 \centering \reset@font
+        {\setromanfont{Minister Std Bold}
+        \addfontfeature{LetterSpace=23.0}
+        \thickhrulefill
+        \begin{tabular}{|c|}    
+%        {\quad{\bfseries\uppercase {#1}}\quad} >> For PROLOGUE
+        {\bfseries\uppercase{Chapter \thechapter}}
+        \end{tabular}}\thickhrulefill 
+        \par\nobreak
+        \vspace*{10\p@}%
+        \interlinepenalty\@M
+        \vspace*{10\p@}%
+        \addfontfeature{LetterSpace=14.0}
+        \LARGE\uppercase{#1}\par\nobreak
+        \par
+        \vspace*{5\p@}%
+    %\vskip 40\p@
+    \vskip 100\p@
+  }}
+
+%%% SECTION %%%
+\newcommand{\@haveatleast}[1]{\relax\par \vskip #1
+     \penalty 0\vskip -#1 \relax }
+
+\def\@makesectionhead#1#2{%
+    \thispagestyle{empty}\vspace*{1\p@}%
+    {\parindent \z@ \hyphenpenalty=10000 \centering \reset@font
+          {\setromanfont{Minister Std Bold}
+          \addfontfeature{LetterSpace=23.0}
+          \thickhrulefill
+          \begin{tabular}{|c|}    
+  %        {\quad{\bfseries\uppercase {#1}}\quad} >> For PROLOGUE
+          {\bfseries\uppercase{#1}}
+          \end{tabular}}\thickhrulefill 
+          \par\nobreak
+          \vspace*{5\p@}%
+          \interlinepenalty\@M
+          \vspace*{5\p@}%
+          \addfontfeature{LetterSpace=9.0}
+          \Large{#2}\par\nobreak
+          \par
+          \vspace*{5\p@}%
+      %\vskip 40\p@
+      \vskip 35\p@
+    }}
+
+
+\renewcommand{\section}{\@haveatleast{5\baselineskip
+    }\@afterindentfalse \secdef\@section\@ssection}
+ 
+\def\@section[#1]#2{%
+  \clearpage
+  \ifnum \c@secnumdepth >\z@
+    \refstepcounter{section}%
+    \addcontentsline{toc}{section}{\protect \numberline{\thesection}#1}%
+  \else
+    \addcontentsline{toc}{section}{#1}%
+  \fi
+  \@makesectionhead{\thesection}{#2}%
+  \sectionmark{#1}%
+  % \@makesectionhead{#2}%
+  \@afterheading
+  }
+
+\def\@ssection#1{\@makesectionhead{Prologue}{#1}\@afterheading}
+% \def\@ssection#1{\@makesectionhead{#1}\@afterheading}
+
+%%% SUBSECTION %%%
+\def\@makesubsectionhead#1{%
+%    \vspace*{10\p@}%
+    \vskip 20\p@        
+    {\parindent \z@ \hyphenpenalty=10000 \centering \reset@font
+          {\setromanfont{Minister Std Light}
+          \addfontfeature{LetterSpace=12.0}
+          \begin{exm} {\centering \uppercase{#1}} \end{exm}}
+    \par\nobreak
+    \vskip 5\p@
+    }}
+    
+\renewcommand{\subsection}{\@haveatleast{4\baselineskip
+    }\@afterindentfalse \secdef\@subsection\@ssubsection}
+
+\def\@subsection[#1]#2{%
+  \ifnum \c@secnumdepth >\@ne
+    \refstepcounter{subsection}%
+    \addcontentsline{toc}{subsection}{\protect
+      \numberline{\thesubsection}#1}%
+  \else
+    \addcontentsline{toc}{subsection}{#1}%
+  \fi
+  %\@makesubsectionhead{\thesubsection}{#2}%
+  \@makesubsectionhead{#2}%
+  \subsectionmark{#1}
+  \@afterheading
+  }
+%  \def\@ssubsection#1{\@makesubsectionhead{}{#1}\@afterheading}
+\def\@ssubsection#1{\@makesubsectionhead{#1}\@afterheading}
+
+
+%%% TITLE PAGE %%%
+% From report.cls
+\newenvironment{titlepage}
+{%
+  \if@twocolumn
+    \@restonecoltrue\onecolumn
+  \else
+    \@restonecolfalse\newpage
+  \fi
+  \thispagestyle{empty}%
+  \setcounter{page}\z@
+}%
+{\if@restonecol\twocolumn \else \newpage \fi
+}
+
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection. #1}{}}
+
+
+\begin{document}
+\sloppy
+
+%%% PAGE HEADERS AND FOOTERS FOR TITLE, FIGURES, TABLES %%%
+\makepagestyle{test}
+\makeevenhead{test}{}{}{}
+\makeoddhead{test}{}{}{}
+\pagestyle{test}
+
+
+% Title page
+%\pagenumbering{alph} 
+\begin{titlepage}
+ \begin{center}
+  \vspace*{1in} {\Huge Poolcasting: an intelligent technique to customise music programmes for their audience} 
+  \par \vspace{1.5in} {\Large Claudio Baccigalupo} 
+  \par \vfill Tesi doctoral del progama de Doctorat en Inform\`{a}tica\\
+  Institut d'Investigaci\'{o} en Inte\lgem ig\`{e}ncia Artificial (IIIA-CSIC)
+  \par \vspace{0.5in} Dirigit per Enric Plaza
+  \par \vspace{0.5in} Departament de Ci\`{e}ncies de la Computaci\'{o}\\
+  Universitat Aut\`{o}noma de Barcelona
+  \par \vspace{0.5in} Bellaterra, novembre de 2009 
+ \end{center}
+\end{titlepage}
+ 
+\pagenumbering{roman} 
+\setcounter{page}{2}
+\cleardoublepage
+\begin{abstract}
+%        \setcounter{page}{5}
+Poolcasting is an intelligent technique to customise musical sequences for groups of listeners. 
+Poolcasting acts like a disc jockey, determining and delivering songs that satisfy its audience.
+Satisfying an entire audience is not an easy task, especially when members of the group have heterogeneous preferences and can join and leave the group at different times.
+%
+The approach of poolcasting consists in selecting songs iteratively, in real time, favouring those members who are less satisfied by the previous songs played.
+%In this way, poolcasting can deliver sequences of songs fairly customised for the entire audience. 
+
+Poolcasting additionally ensures that the played sequence does not repeat the same songs or artists closely and that pairs of consecutive songs `flow' well one after the other, in a musical sense. %, without jolting musical transitions.
+Good disc jockeys know from expertise which songs sound well in sequence; poolcasting obtains this knowledge from the analysis of playlists shared on the Web.
+The more two songs occur closely in playlists, the more poolcasting considers two songs as associated, in accordance with the human experiences expressed through playlists.
+Combining this knowledge and the music profiles of the listeners, poolcasting autonomously generates sequences that are varied, musically smooth and fairly adapted for a particular audience.
+
+A natural application for poolcasting is automating radio programmes.
+Many online radios broadcast on each channel a random sequence of songs that is not affected by who is listening.
+Applying poolcasting can improve radio programmes, playing on each channel a varied, smooth and group-customised musical sequence.
+The integration of poolcasting into a Web radio has resulted in an innovative system called Poolcasting Web radio.
+Tens of people have connected to this online radio during one year providing first-hand evaluation of its social features.
+A set of experiments have been executed to evaluate how much the size of the group and its musical homogeneity affect the performance of the poolcasting technique.
+
+\paragraph{Keywords:} % (fold)
+\label{par:keywords_}
+Case-Based Reasoning, user-adaptive systems, social choice, preference aggregation, group customisation, experience Web, playlists, co-occurrence analysis, user modelling, personalised radios, adaptive hypermedia, digital music services.
+% paragraph keywords_ (end)
+
+\end{abstract}
+\cleardoublepage
+% Aaron Wolfe, David Baelde, 
+\tableofcontents\cleardoublepage
+\listoffigures\cleardoublepage
+\listoftables\cleardoublepage
+\chapter*{Acknowledgements}
+This work is dedicated to everyone who made my research possible and my life pleasurable during the last four years.
+
+To Enric Plaza for the tips, corrections, and constant work.
+To MusicStrands for financing the scholarship that paid for my studies.
+To the founders of the IIIA for creating this unrivalled Research Institute.
+To Andrea Giovannucci for making me come to Spain in the first place.
+To Luca Merlino for sharing many lunches and ideas.
+To Justin Donaldson for making me addicted to R.
+To Elias Pampalk for sharing my work with Last.fm.
+To Neal Lathia and Daniele Quercia for inviting me at the University College of London.
+To Am\'{e}lie Anglade for inviting me at the Queen's Mary University of London.
+To Lorenzo Bernacchioni and Manu Atencia for sharing their personal music collections.
+To Jim Shur for packing up the data set of playlists.
+To Tito Cruz for the supreme technical support.
+To David Baelde for creating liquidsoap.
+To Aaron Wolfe for creating Spogbiper.
+To David Heinemeier Hansson for creating Ruby on Rails.
+% To Apple, Inc. for the hardware and software.
+To Michael Casey, Derek Bridge, Peyman Faratin, Francisco Mart\'{\i}n, Barry Smyth for the encouragement.
+To Enrico and Marita, my parents, for the everlasting support.
+And to Pau for relentlessly listening to me while reading out loud the thesis uncountable times, though this was not mentioned in our marriage contract.
+Thanks.
+\cleardoublepage
+\pagenumbering{arabic}
+
+%%% PAGE HEADERS AND FOOTERS %%%
+\makepagestyle{test}
+\makeevenhead{test}{\thepage\quad|\quad\leftmark}{}{}
+\makeoddhead{test}{}{}{\rightmark\quad|\quad\thepage}
+\pagestyle{test}
+
+%% PART 1 
+
+\chapter{Introduction} % (fold)
+\label{cha:introduction}
+\songquote{I ask in all honesty, what would life be?\\ 
+Without a song or a dance what are we?}{ABBA, 1983} 
+\include{a_introduction}
+% chapter introduction (end)
+
+\chapter{Musical associations from a Web of experiences} % (fold)
+\label{cha:smoothness}
+\songquote{DJ, don't you dare to leave\\
+I tried to figure out what others did}{Dover, 1999} 
+\include{c_smoothness}
+% chapter smoothness (end)
+
+\chapter{Individual listening behaviours} % (fold)
+\label{cha:preferences}
+\songquote{I know just what you need\\
+I might just have the thing}{Soul Asylum, 1995} 
+\include{d_preferences}
+% chapter preferences (end)
+
+\chapter{The poolcasting technique} % (fold)
+\label{cha:poolcasting_web_radio}
+\songquote{With this method that I have found\\
+I'm redressing all I know}{Mansun, 1998} 
+\include{e_poolcasting}
+% chapter poolcasting_web_radio (end)
+
+\chapter{Group-customised Web radio} % (fold)
+\label{cha:poolcasting_web_radio2}
+\songquote{It's that same sing song on the radio\\
+It makes me sad}{R.E.M., 1991} 
+\include{f_radio}
+% chapter poolcasting_web_radio2 (end)
+
+\chapter{Experiments and evaluation} % (fold)
+\label{cha:evaluation}
+\songquote{Everybody makes mistakes,\\
+But I feel alright when I come undone}{LCD Soundsystem, 2005} 
+\include{g_evaluation}
+% chapter evaluation (end)
+
+\chapter{Conclusions} % (fold)
+\label{cha:conclusions}
+\songquote{Not all good things come to an end\\ 
+now it is only a chosen few}{Elvis Costello, 1982} 
+\include{k_conclusions}
+
+% 
+
+\bibliographystyle{named} 
+\bibliography{bibliography} %\addcontentsline{toc}{chapter}{\bibname}
+
+\appendix
+\renewcommand{\@makechapterhead}[1]{\cleardoublepage\thispagestyle{empty}\vspace*{1\p@}%
+  {\parindent \z@ \hyphenpenalty=10000 \centering \reset@font
+        {\setromanfont{Minister Std Bold}
+        \addfontfeature{LetterSpace=23.0}
+        \thickhrulefill
+        \begin{tabular}{|c|}    
+%        {\quad{\bfseries\uppercase {#1}}\quad} >> For PROLOGUE
+        {\bfseries\uppercase{Appendix \thechapter}}
+        \end{tabular}}\thickhrulefill 
+        \par\nobreak
+        \vspace*{10\p@}%
+        \interlinepenalty\@M
+        \vspace*{10\p@}%
+        \addfontfeature{LetterSpace=14.0}
+        \LARGE\uppercase{#1}\par\nobreak
+        \par
+        \vspace*{5\p@}%
+    %\vskip 40\p@
+    \vskip 40\p@
+  }}
+
+
+\chapter{Top-associated movies}
+\label{cha:appendix}
+Preliminary experiments have shown that the analysis of watch-lists from the Web can return valuable lists of top associated movies, applying the same co-occurrence analysis process reported in Sect.~\ref{sec:co_occurrence_analysis5} to uncover associated songs.
+The idea is that the more users have \emph{rented} the same two movies within a short period and have \emph{liked} them both, the more those movies are associated and can be recommended to people who have only watched one of the two. % Whenever a new user rents and likes one of the two movies, it makes sense to suggest the other one.
+
+Experiments were run on a set of watch-lists obtained from the rental service company Netflix, which included 18,000 titles watched by over 480,000 users \cite{Bennett07}.
+The watch-lists were analysed to identify pairs of movies watched by the same persons within a range of five days and both rated 5 out of 5 stars. 
+Neither the order nor the distance between the movies were considered as relevant, corresponding to the parameters set to $\delta = 5$ (maximum distance in days), $\alpha_J = 0.2$ (distance not influent), $\gamma = 0.5$ (order not influent).
+The popularity bias parameter was set to $\beta = 0.9$ to strongly punish over-popular movies in the watch-lists.
+
+The result of the analysis was the compilation of lists of `top associated titles' according to Netflix users.
+Each list reports titles loved by people who also rented and loved the `seed'  movie within a short period. 
+Two sample lists of these `top associated titles' are reported hereafter.
+
+\paragraph{Sense and sensibility (1995).} % (fold)
+\label{par:sense_and_sensibility}
+
+This movie was watched by 31,389 Netflix users. 
+Within a period of five days, the same users also watched and equally rated 8,966 other movies.
+%With a process equivalent to the one described for songs in Sect.~\ref{sec:co_occurrence_analysis5}, a movie-to-movie association was calculated from `Sense and Sensibility' to each of these movies, setting the parameters to $\delta = 5$ (maximum distance in days), $\alpha_J = 0.2$ (distance is not influent), $\gamma = 0.5$ (order is not influent), and $\beta = 0.9$ (over-popular movies are strongly punished).
+The top associated movies uncovered were:
+`Shakespeare in Love' (1998), `A Fish Called Wanda' (1988), `Amadeus' (1984), `The Full Monty' (1997) `Four Weddings and a Funeral' (1994), `Elizabeth' (1998), `Field of Dreams' (1989), `Much Ado About Nothing' (1993), `The Princess Bride' (1987), `Dead Poets Society' (1989).
+
+\paragraph{Jumanji (1995).} % (fold)
+\label{par:jumanji}
+
+This movie was watched by 15,078 Netflix users. 
+Within the same five days, these users also watched and assigned the same rating assigned to `Jumanji' to 7,406 other movies. 
+The top associated movies turned out to be:
+`Hook' (1991), `Kindergarten Cop' (1990), `Twister' (1996), `Flubber' (1997), `Beetlejuice' (1988), `Liar Liar' (1997), `Men in Black' (1997), `City Slickers' (1991), `A League of Their Own' (1992), `Father of the Bride' (1991).  
+
+
+%Whenever new users rent and like the `seed' movie, it makes sense to suggest them a title in this list as they will probably going to like it as well.
+
+% \paragraph{Tron (1982).} % (fold)
+% \label{par:tron}
+% 
+% This movie has been watched by 20,569 Netflix users. The top associated movies turned out to be:
+% `The Last Starfighter' (1984), `Willow' (1988), `The Abyss' (1989), `Highlander' (1986), `Clash of the Titans' (1981), `The Fifth Element' (1997), `Close Encounters of the Third Kind' (1977), `Star Trek II: The Wrath of Khan' (1982), `Time Bandits' (1981), `Total Recall' (1990).
+% 
+
+
+% \clearpage
+% \pagestyle{index}
+% %\renewcommand{\chaptermark}[1]{}
+% \renewcommand{\preindexhook}{%
+% The first page number is usually, but not always, the primary reference to
+% the indexed topic.\vskip\onelineskip}
+% \indexintoc
+% \printindex
+% 
+\clearpage
+\pagestyle{empty}
+\null\vfil
+
+\begin{adjustwidth}{1.15in}{1.15in}
+\begin{center}
+{\Large\    % \clearpage
+{Colophon}}
+\end{center}
+\begin{center}
+This thesis was typeset using the \LaTeX\;typesetting system created by Leslie Lamport and a memoir class. 
+
+The graphs were plotted in R and designed with OmniGraffle Pro. 
+
+The body text is set 11pt on a 369pt measure with Minister Std Light designed by Carl Albert Fahrenwaldt. 
+
+Other font families include Helvetica, Avenir Std and Computer Modern.
+
+\end{center}
+
+\end{adjustwidth}
+
+\vfil
+\clearpage
+ 
+\end{document}
